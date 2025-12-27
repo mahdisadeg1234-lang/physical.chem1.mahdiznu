@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>وب اپ شیمی فیزیک ۱ — دانشگاه زنجان</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+    header {
+      background: #283593;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    header .logo {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    header h2 {
+      margin: 6px 0;
+      font-size: 18px;
+    }
+    header .author {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .tabs button {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: #e0e0e0;
+      font-size: 14px;
+    }
+    .tabs button.active {
+      background: #283593;
+      color: white;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 10px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    h2.section-title {
+      margin-top: 0;
+      font-size: 18px;
+      color: #283593;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    label {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    input, select {
+      padding: 5px;
+      margin-top: 3px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    button.calc-btn {
+      margin-top: 15px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 20px;
+      background: #283593;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .result-box {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f1f8e9;
+      border-radius: 8px;
+      font-size: 14px;
+      border: 1px solid #c5e1a5;
+      white-space: pre-line;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: center;
+    }
+    th {
+      background: #eeeeee;
+    }
+    canvas {
+      margin-top: 15px;
+      max-width: 100%;
+    }
+  </style>
+
+  <!-- نمودار: Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- هدر با لوگوی دانشگاه -->
+  <header>
+    <img src="https://upload.wikimedia.org/wikipedia/fa/5/5b/Logo_of_University_of_Zanjan.jpg" class="logo" alt="لوگوی دانشگاه زنجان">
+    <h1>دانشگاه زنجان</h1>
+    <h2>دانشکده علوم</h2>
+    <p class="author">تهیه شده توسط: مهدی صادق‌زاده</p>
+  </header>
+
+  <div class="container">
+
+    <!-- تب‌ها -->
+    <div class="tabs">
+      <button class="active" onclick="showTab('gas', this)">گاز ایده‌آل</button>
+      <button onclick="showTab('firstlaw', this)">قانون اول ترمودینامیک</button>
+      <button onclick="showTab('gibbs', this)">ΔG ،ΔH ،ΔS (نمودار)</button>
+      <button onclick="showTab('equilibrium', this)">تعادل شیمیایی</button>
+    </div>
+
+    <!-- ماژول گاز ایده‌آل -->
+    <div id="gas" class="tab-content active">
+      <h2 class="section-title">ماژول ۱ – گاز ایده‌آل</h2>
+      <p>
+        از معادله‌ی گاز ایده‌آل استفاده می‌کنیم:<br>
+        PV = nRT<br>
+        P بر حسب atm، V بر حسب L، n بر حسب mol، T بر حسب K، R = 0.08206
+      </p>
+      <p style="font-size:12px;color:#555;">سه تا از کمیت‌ها را وارد کن و یکی را خالی بگذار تا همان محاسبه شود.</p>
+
+      <div class="row">
+        <div><label>فشار P (atm)</label><input type="number" id="P" step="0.0001"></div>
+        <div><label>حجم V (L)</label><input type="number" id="V" step="0.0001"></div>
+        <div><label>مول n (mol)</label><input type="number" id="n" step="0.0001"></div>
+        <div><label>دما T (K)</label><input type="number" id="T" step="0.1"></div>
+      </div>
+      <button class="calc-btn" onclick="calculateGas()">محاسبه گاز ایده‌آل</button>
+      <div id="gas-result" class="result-box"></div>
+    </div>
+
+    <!-- قانون اول ترمودینامیک -->
+    <div id="firstlaw" class="tab-content">
+      <h2 class="section-title">ماژول ۲ – قانون اول ترمودینامیک</h2>
+      <p>ΔU = Q − W</p>
+      <div class="row">
+        <div><label>گرما Q</label><input type="number" id="Q" step="0.01"></div>
+        <div><label>کار W</label><input type="number" id="W" step="0.01"></div>
+      </div>
+      <button class="calc-btn" onclick="calculateFirstLaw()">محاسبه ΔU</button>
+      <div id="firstlaw-result" class="result-box"></div>
+    </div>
+
+    <!-- ΔG، ΔH، ΔS -->
+    <div id="gibbs" class="tab-content">
+      <h2 class="section-title">ماژول ۳ – انرژی آزاد گیبس (ΔG) با نمودار</h2>
+      <div class="row">
+        <div><label>دما T (K)</label><input type="number" id="T_gibbs" step="0.1"></div>
+        <div><label>ΔH (kJ/mol)</label><input type="number" id="dH" step="0.01"></div>
+        <div><label>ΔS (J/mol·K)</label><input type="number" id="dS" step="0.01"></div>
+      </div>
+      <button class="calc-btn" onclick="calculateGibbs()">محاسبه و رسم نمودار</button>
+      <div id="gibbs-result" class="result-box"></div>
+      <div id="gibbs-table-container"></div>
+      <canvas id="gibbs-chart"></canvas>
+    </div>
+
+    <!-- تعادل شیمیایی -->
+    <div id="equilibrium" class="tab-content">
+      <h2 class="section-title">ماژول ۴ – تعادل شیمیایی</h2>
+      <div class="row">
+        <div><label>دما T (K)</label><input type="number" id="T_eq" step="0.1"></div>
+        <div><label>ثابت تعادل K</label><input type="number" id="K_eq" step="0.000001"></div>
+      </div>
+      <button class="calc-btn" onclick="calculateEquilibrium()">محاسبه ΔG°</button>
+      <div id="equilibrium-result" class="result-box"></div>
+    </div>
+
+  </div>
+
+  <!-- اسکریپت محاسبات -->
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function calculateGas() {
+      const R = 0.08206;
+      let P = document.getElementById('P').value;
+      let V = document.getElementById('V').value;
+      let n = document.getElementById('n').value;
+      let T = document.getElementById('T').value;
+
+      let empty = [P, V, n, T].filter(x => x === "").length;
+      if (empty !== 1) {
+        document.getElementById('gas-result').textContent = "دقیقاً یکی را خالی بگذار.";
+        return;
+      }
+      P = P? parseFloat(P): null;
+      V = V? parseFloat(V): null;
+      n = n? parseFloat(n): null;
+      T = T? parseFloat(T): null;
+
+      if (!P) P = (n*R*T)/V;
+      else if (!V) V = (n*R*T)/P;
+      else if (!n) n = (P*V)/(R*T);
+      else if (!T) T = (P*V)/(n*R);
+
+      const txt = `P=${P.toFixed(4)} atm  V=${V.toFixed(4)} L  n=${n.toFixed(4)} mol  T=${T.toFixed(2)} K`;
+      document.getElementById('gas-result').textContent = txt;
+    }
+
+    function calculateFirstLaw() {
+      const Q = parseFloat(document.getElementById('Q').value);
+      const W = parseFloat(document.getElementById('W').value);
+      const dU = Q - W;
+      document.getElementById('firstlaw-result').textContent =
+        `ΔU = ${dU.toFixed(3)}\n(مثبت → انرژی داخلی افزایش، منفی → کاهش)`;
+    }
+
+    let gibbsChart = null;
+    function calculateGibbs() {
+      const T = parseFloat(document.getElementById('T_gibbs').value);
+      const dH_kJ = parseFloat(document.getElementById('dH').value);
+      const dS_J = parseFloat(document.getElementById('dS').value);
+      const dH_J = dH_kJ*1000;
+      const dG = (dH_J - T*dS_J)/1000;
+
+      document.getElementById('gibbs-result').textContent =
+        `ΔG = ${dG.toFixed(3)} kJ/mol`;
+
+      // جدول + نمودار
+      let labels = [];
+      let vals = [];
+      let tableHTML = "<table><tr><th>T(K)</th><th>ΔG(kJ/mol)</th></tr>";
+      for(let temp=T-50; temp<=T+50; temp+=10) {
+        let dGtemp = (dH_J - temp*dS_J)/1000;
+        labels.push(temp);
+        vals.push(dGtemp.toFixed(3));
+        tableHTML += `<tr><td>${temp}</td><td>${dGtemp.toFixed(3)}</td></tr>`;
+      }
+      tableHTML += "</table>";
+      document.getElementById('gibbs-table-container').innerHTML = tableHTML;
+
+      const ctx = document.getElementById('gibbs-chart');
+      if (gibbsChart) gibbsChart.destroy();
+      gibbsChart = new Chart(ctx, {
+        type:'line',
+        data:{ labels:labels, datasets:[{label:'ΔG',data:vals,fill:false,tension:0.3}] }
+      });
+    }
+
+    function calculateEquilibrium() {
+      const T = parseFloat(document.getElementById('T_eq').value);
+      const K = parseFloat(document.getElementById('K_eq').value);
+      const R = 8.314;
+      const dG = -(R*T*Math.log(K))/1000;
+      document.getElementById('equilibrium-result').textContent =
+        `ΔG° = ${dG.toFixed(3)} kJ/mol`;
+    }
+  </script>
+
+</body>
+</html>
